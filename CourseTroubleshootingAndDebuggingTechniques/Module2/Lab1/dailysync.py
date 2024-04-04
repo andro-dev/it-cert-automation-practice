@@ -5,7 +5,7 @@ from multiprocessing import Pool
 
 
 home = os.path.expanduser("~")
-backup_src = os.path.join(home, "projects")
+backup_src = os.path.join(home, "Downloads", "Pictures")
 backup_dest = os.path.join(home, "backup")
 if not os.path.exists(backup_dest):
     os.mkdir(backup_dest)
@@ -13,7 +13,8 @@ if not os.path.exists(backup_dest):
 def get_folders(root):
     folders = []
     for item in os.listdir(root):
-        if not item.startswith(".") and os.path.isdir(os.path.join(root, item)):
+        if os.path.isdir(os.path.join(root, item)):
+        # if not item.startswith(".") and os.path.isdir(os.path.join(root, item)):
             folders.append(os.path.join(root,item))
     return folders
 
