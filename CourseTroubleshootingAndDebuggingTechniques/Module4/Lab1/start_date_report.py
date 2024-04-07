@@ -1,18 +1,8 @@
 #!/usr/bin/env python3
 
-
 import csv
 import datetime
 import requests
-
-
-#!/usr/bin/env python3
-
-
-import csv
-import datetime
-import requests
-
 
 FILE_URL = "https://storage.googleapis.com/gwg-content/gic215/employees-with-date.csv"
 
