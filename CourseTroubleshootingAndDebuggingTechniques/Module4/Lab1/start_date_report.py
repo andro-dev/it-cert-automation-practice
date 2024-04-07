@@ -15,7 +15,8 @@ def get_file_data(url):
     decoded_lines = [line.decode("UTF-8") for line in response.iter_lines()]
 
     rows = list(csv.reader(decoded_lines[1:]))
-    return {f"{row[0]} {row[1]}": datetime.datetime.strptime(f"{row[3]}", '%Y-%m-%d') for row in rows}
+    return {f"{row[0]} {row[1]}": datetime.datetime.strptime(f"{row[3]}", '%Y-%m-%d')
+            for row in rows}
 
 
 def get_start_date():
@@ -39,7 +40,8 @@ employee_dates = get_file_data(FILE_URL)
 def list_newer(start_date, end_date=datetime.datetime.today(), data=None):
     if data is None:
         data = employee_dates
-    newer_list = {k: v for k, v in sorted(data.items() , key=lambda item: item[1]) if start_date <= v < end_date}
+    newer_list = {k: v for k, v in sorted(data.items(), key=lambda item: item[1])
+                  if start_date <= v < end_date}
     for k in newer_list:
         print(k, newer_list.get(k).strftime('%b %d, %Y'))
 
