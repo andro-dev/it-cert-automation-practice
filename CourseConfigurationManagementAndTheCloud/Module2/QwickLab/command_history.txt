@@ -1,1 +1,101 @@
+student-01-6695f73b2cba@qwiklabs.net
 
+CwIW6MiJhTdD
+
+qwiklabs-gcp-00-0ed1add8d2fb
+
+cat > Dockerfile <<EOF
+# Use an official Node runtime as the parent image
+FROM node:lts
+
+# Set the working directory in the container to /app
+WORKDIR /app
+
+# Copy the current directory contents into the container at /app
+ADD . /app
+
+# Make the container's port 80 available to the outside world
+EXPOSE 80
+
+# Run app.js using node when the container launches
+CMD ["node", "app.js"]
+EOF
+
+====================================================
+
+1  gcloud auth list
+    2  gcloud config list project
+    3  docker run hello-world
+    4  docker images
+    5  docker run hello-world
+    6  docker ps
+    7  docker ps -a
+    8  mkdir test && cd test
+    9  cat > Dockerfile <<EOF
+   10  # Use an official Node runtime as the parent image
+   11  FROM node:lts
+   12  # Set the working directory in the container to /app
+   13  WORKDIR /app
+   14  # Copy the current directory contents into the container at /app
+   15  ADD . /app
+   16  # Make the container's port 80 available to the outside world
+   17  EXPOSE 80
+   18  # Run app.js using node when the container launches
+   19  CMD ["node", "app.js"]
+   20  EOF
+   21  ls -l
+   22  cat Dockerfile 
+   23  cat > app.js <<EOF
+   24  const http = require('http');
+   25  const hostname = '0.0.0.0';
+   26  const port = 80;
+   27  const server = http.createServer((req, res) => {
+   28      res.statusCode = 200;
+   29      res.setHeader('Content-Type', 'text/plain');
+   30      res.end('Hello World\n');
+   31  });
+   32  server.listen(port, hostname, () => {
+   33      console.log('Server running at http://%s:%s/', hostname, port);
+   34  });
+   35  process.on('SIGINT', function() {
+   36      console.log('Caught interrupt signal and will exit');
+   37      process.exit();
+   38  });
+   39  EOF
+   40  cat app.js
+   41  docker build -t node-app:0.1 .
+   42  docker images
+   43  curl http://localhost:4000
+   44  docker stop my-app && docker rm my-app
+   45  docker run -p 4000:80 --name my-app -d node-app:0.1
+   46  docker ps
+   47  docker logs d963
+   48  cd test
+   49  vim app.js 
+   50  docker build -t node-app:0.2 .
+   51  docker run -p 8080:80 --name my-app-2 -d node-app:0.2
+   52  docker ps
+   53  curl http://localhost:8080
+   54  curl http://localhost:4000
+   55  docker logs -f 266
+   56  docker logs -f d963
+   57  docker exec -it d963 bash
+   58  docker inspect d963
+   59  docker inspect --format='{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' d963
+   60  gcloud auth configure-docker us-central1-docker.pkg.dev
+   61  export PROJECT_ID=$(gcloud config get-value project)
+   62  cd ~/test
+   63  docker build -t us-central1-docker.pkg.dev/$PROJECT_ID/my-repository/node-app:0.2 .
+   64  docker images
+   65  docker push us-central1-docker.pkg.dev/$PROJECT_ID/my-repository/node-app:0.2
+   66  docker stop $(docker ps -q)
+   67  docker rm $(docker ps -aq)
+   68  docker rmi us-central1-docker.pkg.dev/$PROJECT_ID/my-repository/node-app:0.2
+   69  docker rmi node:lts
+   70  docker rmi -f $(docker images -aq) # remove remaining images
+   71  docker images
+   72  docker pull us-central1-docker.pkg.dev/$PROJECT_ID/my-repository/node-app:0.2
+   73  docker run -p 4000:80 -d us-central1-docker.pkg.dev/$PROJECT_ID/my-repository/node-app:0.2
+   74  curl http://localhost:4000
+   75  history
+   76  history > command_history.txt
