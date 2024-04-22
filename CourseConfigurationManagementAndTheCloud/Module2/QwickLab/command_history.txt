@@ -1,29 +1,4 @@
-student-01-6695f73b2cba@qwiklabs.net
-
-CwIW6MiJhTdD
-
-qwiklabs-gcp-00-0ed1add8d2fb
-
-cat > Dockerfile <<EOF
-# Use an official Node runtime as the parent image
-FROM node:lts
-
-# Set the working directory in the container to /app
-WORKDIR /app
-
-# Copy the current directory contents into the container at /app
-ADD . /app
-
-# Make the container's port 80 available to the outside world
-EXPOSE 80
-
-# Run app.js using node when the container launches
-CMD ["node", "app.js"]
-EOF
-
-====================================================
-
-1  gcloud auth list
+    1  gcloud auth list
     2  gcloud config list project
     3  docker run hello-world
     4  docker images
