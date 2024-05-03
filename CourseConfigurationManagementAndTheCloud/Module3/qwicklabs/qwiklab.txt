@@ -11,5 +11,22 @@ Output: 35.202.101.179
 
 =========================================================
 
+QwikLab for Module 3 review: "Debug Cloud Deployment"
 
+Commands History
+1  sudo systemctl status apache2 (see that it's failing to start on port 80)                                                                                       
+2  sudo systemctl restart apache2                                                                                       
+3  sudo systemctl status apache2 (still failing)                                                                                    
+4  sudo netstat -nlp  (find active tcp:ports)                                                                                                  
+5  sudo netstat -nlp | grep :80   (find which Program using port 80) -> Output ... 127.0.0.1:80 python3
+...    
+12  ps -ax | grep python3 (find PID for the programm) -> Output: PID: 1392 .../usr/local/bin/jimmytest.py                                                                             
+13  cat /usr/local/bin/jimmytest.py                                                                                     
+14  sudo kill 1392                                                                                                      
+15  ps -ax | grep python3                                                                                               
+16  sudo systemctl --type=service | grep jimmy -> Output: jimmitest ....                                                                         
+17  sudo systemctl stop jimmytest && sudo systemctl disable jimmytest                                                   
+18  sudo netstat -nlp                                                                                                   
+19  sudo netstat -nlp | grep :80 (make sure that port 80 in not used by other program)                                                                                       
+20  sudo systemctl start apache2 -> then open 127.0.0.1 in broweser to see Apache running)                                                                                       
 
