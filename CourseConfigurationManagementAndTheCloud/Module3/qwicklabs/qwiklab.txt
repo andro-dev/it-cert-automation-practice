@@ -1,0 +1,11 @@
+student-01-c3fada8311ec
+
+35.238.217.95
+
+linux-instance: 35.202.101.179 
+
+command to get external IP of 'linux-instance' on gcloud:
+
+gcloud compute instances describe linux-instance --zone=us-central1-c --format='get(networkInterfaces[0].accessConfigs[0].natIP)'
+
+
