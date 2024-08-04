@@ -3,6 +3,10 @@
 import json
 import locale
 import sys
+from typing import List
+
+JSON_FILE = "./../car_sales.json"
+REPORT_FILE = "./../cars.pdf"
 
 
 def load_data(filename):
@@ -10,21 +14,6 @@ def load_data(filename):
     with open(filename) as json_file:
         data = json.load(json_file)
     return data
-
-
-'''
-Example of data element:
-    {
-            "id": 47,
-            "car": {
-                    "car_make": "Lamborghini",
-                    "car_model": "Murciélago",
-                    "car_year": 2002
-            },
-            "price": "$13724.05",
-            "total_sales": 149
-    }
-'''
 
 
 def format_car(car):
@@ -73,6 +62,7 @@ def update_sales_per_year(item, sales_per_year):
     else:
         sales_per_year[year] = item["total_sales"]
 
+
 def cars_dict_to_table(car_data):
     """Turns the data in car_data into a list of lists."""
     table_data = [["ID", "Car", "Price", "Total Sales"]]
@@ -81,14 +71,59 @@ def cars_dict_to_table(car_data):
     return table_data
 
 
+def build_additional_info(summary):
+    result = ""
+    for line in summary:
+        result += F'{line}<br/>'
+
+    return result
+
+
+def build_table_data(summary, data):
+    result = []
+    table_header: list[str] = ['ID', 'Car', 'Price', 'Total Sales']
+    table_body: list[str] = []
+    for item in data:
+        table_row = []
+        table_row.append(item['id'])
+        table_row.append(f"{item['car']['car_make']} {item['car']['car_model']} ({item['car']['car_year']})")
+        table_row.append(item['price'])
+        table_row.append(item['total_sales'])
+        table_body.append(table_row)
+    table_body.insert(0, table_header)
+    result = table_body
+    return result
+
+
 def main(argv):
     """Process the JSON data and generate a full report out of it."""
-    data = load_data("./../car_sales.json")
+    json_file, report_file = process_args(argv)
+
+    data = load_data(json_file)
     summary = process_data(data)
     print(summary)
+
     # TODO: turn this into a PDF report
+    title = ""
+    generate_pdf_report(report_file, title, build_additional_info(summary), build_table_data(summary, data))
 
     # TODO: send the PDF report as an email attachment
+
+
+def process_args(argv):
+    json_file = JSON_FILE
+    report_file = REPORT_FILE
+    if len(argv) > 1:
+        json_file = argv[1]
+    if len(argv) > 2:
+        report_file = argv[2]
+
+    return json_file, report_file
+
+
+def generate_pdf_report(report_file, title, additional_info, table_data):
+    import reports
+    reports.generate(report_file, title, additional_info, table_data)
 
 
 if __name__ == "__main__":
