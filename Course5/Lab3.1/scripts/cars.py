@@ -4,6 +4,7 @@ import json
 import locale
 import sys
 from typing import List
+from emails import generate, send # import from local project file
 
 JSON_FILE = "./../car_sales.json"
 REPORT_FILE = "./../cars.pdf"
@@ -43,8 +44,8 @@ def process_data(data):
         # TODO: also handle most popular car_year
         update_sales_per_year(item, sales_per_year)
 
-    max_year = max(sales_per_year, key=sales_per_year.get)
-    sales = sales_per_year[max_year]
+    max_year = max(sales_per_year, key=sales_per_year.get) # year with most units sold
+    sales = sales_per_year[max_year] # number of units sold this year
 
     summary = [
         "The {} generated the most revenue: ${}".format(format_car(max_revenue["car"]), max_revenue["revenue"]),
@@ -75,42 +76,43 @@ def build_additional_info(summary):
     result = ""
     for line in summary:
         result += F'{line}<br/>'
-
     return result
 
-
-def build_table_data(summary, data):
-    result = []
-    table_header: list[str] = ['ID', 'Car', 'Price', 'Total Sales']
-    table_body: list[str] = []
-    for item in data:
-        table_row = []
-        table_row.append(item['id'])
-        table_row.append(f"{item['car']['car_make']} {item['car']['car_model']} ({item['car']['car_year']})")
-        table_row.append(item['price'])
-        table_row.append(item['total_sales'])
-        table_body.append(table_row)
-    table_body.insert(0, table_header)
-    result = table_body
-    return result
+#
+# def build_table_data(summary, data):
+#     result = []
+#     table_header: list[str] = ['ID', 'Car', 'Price', 'Total Sales']
+#     table_body: list[str] = []
+#     for item in data:
+#         table_row = []
+#         table_row.append(item['id'])
+#         table_row.append(f"{item['car']['car_make']} {item['car']['car_model']} ({item['car']['car_year']})")
+#         table_row.append(item['price'])
+#         table_row.append(item['total_sales'])
+#         table_body.append(table_row)
+#     table_body.insert(0, table_header)
+#     result = table_body
+#     return result
 
 
 def main(argv):
     """Process the JSON data and generate a full report out of it."""
-    json_file, report_file = process_args(argv)
+    json_file, report_file = get_json_and_report_file_locations(argv)
 
     data = load_data(json_file)
     summary = process_data(data)
     print(summary)
 
     # TODO: turn this into a PDF report
-    title = ""
-    generate_pdf_report(report_file, title, build_additional_info(summary), build_table_data(summary, data))
+    title = "Sales summary for last month"
+    generate_pdf_report(report_file, title, build_additional_info(summary), cars_dict_to_table(data))
+    # build_table_data(summary, data)
 
     # TODO: send the PDF report as an email attachment
+    message = generate("automation@example.com", "student@example.com", "Sales summary for last month", summary, report_file)
+    send(message)
 
-
-def process_args(argv):
+def get_json_and_report_file_locations(argv):
     json_file = JSON_FILE
     report_file = REPORT_FILE
     if len(argv) > 1:
