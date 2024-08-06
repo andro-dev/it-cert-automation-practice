@@ -72,27 +72,14 @@ def cars_dict_to_table(car_data):
     return table_data
 
 
-def build_additional_info(summary):
+def build_additional_info(summary, format_type):
     result = ""
     for line in summary:
-        result += F'{line}<br/>'
+        if format_type == 'pdf':
+            result += F'{line}<br/>'
+        else:
+            result += '\n'
     return result
-
-#
-# def build_table_data(summary, data):
-#     result = []
-#     table_header: list[str] = ['ID', 'Car', 'Price', 'Total Sales']
-#     table_body: list[str] = []
-#     for item in data:
-#         table_row = []
-#         table_row.append(item['id'])
-#         table_row.append(f"{item['car']['car_make']} {item['car']['car_model']} ({item['car']['car_year']})")
-#         table_row.append(item['price'])
-#         table_row.append(item['total_sales'])
-#         table_body.append(table_row)
-#     table_body.insert(0, table_header)
-#     result = table_body
-#     return result
 
 
 def main(argv):
@@ -105,11 +92,11 @@ def main(argv):
 
     # TODO: turn this into a PDF report
     title = "Sales summary for last month"
-    generate_pdf_report(report_file, title, build_additional_info(summary), cars_dict_to_table(data))
-    # build_table_data(summary, data)
+    generate_pdf_report(report_file, title, build_additional_info(summary, 'pdf' ), cars_dict_to_table(data))
 
     # TODO: send the PDF report as an email attachment
-    message = generate("automation@example.com", "student@example.com", "Sales summary for last month", summary, report_file)
+    message = generate("automation@example.com", "student@example.com", "Sales summary for last month",
+                       build_additional_info(summary, 'email'), report_file)
     send(message)
 
 def get_json_and_report_file_locations(argv):

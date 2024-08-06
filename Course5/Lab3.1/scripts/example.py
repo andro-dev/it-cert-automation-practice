@@ -14,7 +14,7 @@ table_data=[['Name', 'Amount', 'Value'],
            ['cherries', 23, 5.80],
            ['grapes', 13, 2.48],
            ['kiwi', 4, 0.49]]
-reports.generate("/tmp/report.pdf", "A Complete Inventory of My Fruit", "This is all my fruit.", table_data)
+reports.generate("./../report.pdf", "A Complete Inventory of My Fruit", "This is all my fruit.", table_data)
 sender = "automation@example.com"
 receiver = "{}@example.com".format(os.environ.get('USER'))
 subject = "List of Fruits"
